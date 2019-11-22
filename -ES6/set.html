@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Set</title>
+</head>
+<body>
+    Set()的使用
+</body>
+<script>
+    let oS = new Set([1,2,3,4,5]);
+    oS.add([4,5],[6]);
+    // console.log(oS);
+
+
+    let oSArr = Array.from(oS)
+    // console.log(oSArr);
+
+    let oSArr2 = [...oS];
+    // console.log(oSArr2);
+
+    //取并 交 差集
+    const arr1 = [1,2,3,4,4,3];
+    const arr2 = [2,3,4,7,1,5];
+    //去重
+    let uniqueArr = new Set([...new Set(arr1),...new Set(arr2)]);
+    console.log(uniqueArr);
+    //并
+    let unionArr = [...arr1,...arr2];
+    console.log(unionArr);
+    //交
+    let intersectionArr = [...new Set(arr1)].filter((ele => new Set(arr2).has(ele)));
+    console.log(intersectionArr);
+    //差
+    let newArr1 = [...new Set(arr1)].filter((ele) => {
+        return !new Set(arr2).has(ele);
+    });
+    let newArr2 =  [...new Set(arr2)].filter((ele) => {
+        return !new Set(arr1).has(ele);
+    });
+    let differenceSetArr = [...newArr1,...newArr2];
+    console.log(differenceSetArr);
+</script>
+</html>
