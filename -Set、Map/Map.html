@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Map</title>
+</head>
+<body>
+    <h1>Map();的使用方法</h1>
+</body>
+<script>
+    let oM = new Map([["name","devil"],["age",18],["sex","female"],[{},"object"],["name","sheDevil"]]);
+    console.log(oM);
+
+    //Map上的api
+    console.log(Map.prototype);
+    //增加值 .set
+    oM.set("favor","dance");
+    oM.set("test","set~");
+    oM.set({},"obj1");
+    console.log(oM);
+    //forEach
+    oM.forEach((ele,key,val) => {
+        console.log("属性值--",ele,"属性名--",key,"自身--",val)
+    })
+    for(let val of oM) {
+        console.log("一个键值对作为一个元素的数组--",val);
+        console.log("key值--",val[0],"属性值---",val[1]);
+    }
+</script>
+</html>
