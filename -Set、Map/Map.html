@@ -89,6 +89,8 @@
         while (oTempBucket.next) {
             if (oTempBucket.next.key == key) {
                 oTempBucket.next.value = value;
+                //当找到对应的key值覆盖掉val之后就停止循环
+                return;
             } else {
                 oTempBucket = oTempBucket.next;
             }
@@ -114,17 +116,49 @@
         return undefined;
     }
 
-    myMap.prototype.delete = function () {
-
+    // 删除时要先把链表的链接重置
+    myMap.prototype.delete = function (key) {
+        let hash = this.makeHash(key);
+        let oTempBucket = this.bucket[hash];
+        while (oTempBucket.next) {
+            if (oTempBucket.next.key == key) {
+                //删除该节点时把指向该节点的链指向该节点的下一个节点，重置链的指向，该节点就不会出现在链中，实现删除
+                oTempBucket.next = oTempBucket.next.next;
+                return true
+            } else {
+                oTempBucket = oTempBucket.next;
+            }
+        }
+        return false
     }
 
-    myMap.prototype.has = function () {
-
+    myMap.prototype.has = function (key) {
+        let hash = this.makeHash(key);
+        let oTempBucket = this.bucket[hash];
+        while(oTempBucket.next){
+            if(oTempBucket.next.key == key){
+                return true
+            }else{
+                oTempBucket = oTempBucket.next;
+            }
+        }
+        return false
     }
 
+    myMap.prototype.clear = function () {
+        this.init();
+    }
     let omyMap = new myMap();
+    let obj = {
+        'sex': '女'
+    }
     omyMap.set('name', 'wgx');
     omyMap.set('age', '18');
+    omyMap.set(obj);
+    omyMap.set(function (){
+        console.log(11)
+    });
+    omyMap.set('name', "替代");
     omyMap.set(2, "4");
 </script>
 
