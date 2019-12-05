@@ -2,10 +2,10 @@
 //CommonJS的模块是对象，输入时必须查找对象属性。
 let fs = require('fs');
 
-    
-    //需求：
-    // data文件中的个文件中都存着另一个文件的相对地址，
-    // 通过回调得到最终文件中的data
+
+//需求：
+// data文件中的个文件中都存着另一个文件的相对地址，
+// 通过回调得到最终文件中的data
 
 // 拙劣的表演:
 
@@ -79,19 +79,22 @@ let fs = require('fs');
 //promise的使用请看html
 
 //用promise改写上述的回调
-function readFile (path) {
-    return new Promise((res,rej) => {
-        fs.readFile(path,'utf-8',(err,data) => {
-            if(data) {
+function readFile(path) {
+    return new Promise((res, rej) => {
+        fs.readFile(path, 'utf-8', (err, data) => {
+            if (data) {
                 res(data);
             }
         })
     })
 }
-readFile('data/name.txt').then((data)=>{
-    return readFile(data);
-}).then((data) => {
-    return readFile(data);
-}).then((data) => {
-    console.log(data)
+Promise.all([readFile('data/name.txt'), readFile('data/number.txt'), readFile('data/score.txt')]).then((val) => {
+    console.log(val);
 })
+// readFile('data/name.txt').then((data)=>{
+//     return readFile(data);
+// }).then((data) => {
+//     return readFile(data);
+// }).then((data) => {
+//     console.log(data)
+// })
