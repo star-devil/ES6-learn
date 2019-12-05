@@ -27,28 +27,28 @@ let fs = require('fs');
 
 //异步操作时会有并发执行的结果不好获取，比如:
 // 要获取某个文件中的信息，并在获取完之后全部输出
-let oNum = {};
-function show (data) {
-    console.log(data)
-}
-function show2 (data) {
-    console.log(data,2)
-}
-fs.readFile('number/numone.txt','utf-8',(err,data) => {
-    if(data) oNum.numone = data;
-    // newShow(oNum);
-    Store.fire(oNum);
-})
-fs.readFile('number/numtwo.txt','utf-8',(err,data) => {
-    if(data) oNum.numtwo = data;
-    // newShow(oNum);
-    Store.fire(oNum);
-})
-fs.readFile('number/numthree.txt','utf-8',(err,data) => {
-    if(data) oNum.numthree = data;
-    // newShow(oNum);
-    Store.fire(oNum);
-})
+// let oNum = {};
+// function show (data) {
+//     console.log(data)
+// }
+// function show2 (data) {
+//     console.log(data,2)
+// }
+// fs.readFile('number/numone.txt','utf-8',(err,data) => {
+//     if(data) oNum.numone = data;
+//     // newShow(oNum);
+//     Store.fire(oNum);
+// })
+// fs.readFile('number/numtwo.txt','utf-8',(err,data) => {
+//     if(data) oNum.numtwo = data;
+//     // newShow(oNum);
+//     Store.fire(oNum);
+// })
+// fs.readFile('number/numthree.txt','utf-8',(err,data) => {
+//     if(data) oNum.numthree = data;
+//     // newShow(oNum);
+//     Store.fire(oNum);
+// })
 
 // 介个after只能传一个回调函数
 // function after(times,cb) {
@@ -60,18 +60,38 @@ fs.readFile('number/numthree.txt','utf-8',(err,data) => {
 // let newShow = after(3,show);
 
 //所以引入promise中的一个发布订阅概念
-let Store = {
-    list: [],
-    times: 3,
-    subscribe (func) {
-        this.list.push(func)
-    },
-    fire(...arg) {
-        --this.times == 0 && this.list.forEach((ele) =>{
-            ele.apply(null,arg);
-        })
-    }
-}
+// let Store = {
+//     list: [],
+//     times: 3,
+//     subscribe (func) {
+//         this.list.push(func)
+//     },
+//     fire(...arg) {
+//         --this.times == 0 && this.list.forEach((ele) =>{
+//             ele.apply(null,arg);
+//         })
+//     }
+// }
 
-Store.subscribe(show);
-Store.subscribe(show2);
+// Store.subscribe(show);
+// Store.subscribe(show2);
+
+//promise的使用请看html
+
+//用promise改写上述的回调
+function readFile (path) {
+    return new Promise((res,rej) => {
+        fs.readFile(path,'utf-8',(err,data) => {
+            if(data) {
+                res(data);
+            }
+        })
+    })
+}
+readFile('data/name.txt').then((data)=>{
+    return readFile(data);
+}).then((data) => {
+    return readFile(data);
+}).then((data) => {
+    console.log(data)
+})
