@@ -11,41 +11,42 @@
 <body>
 
 </body>
+<script src="./myPromise.js"></script>
 <script>
     //promise是支持es6的浏览器自带的一个方法，使用前先new,参数需要传一个函数,该函数与promise同步执行
     //promise是同步执行的函数,在promise中执行异步函数
     //只有成功onFulfilled和失败onRejected两种状态，resolve和reject触发两种状态--可接受一个参数，用.then()进行注册
     // 一：
-    let oP = new Promise((resolve, reject) => {
-        console.log(0);
-        setTimeout(() => {
-            Math.random() * 100 > 60 ? resolve('ok') : reject('no');
-        }, 100)
-    });
-    console.log(1);
-    oP.then((val) => {
-        console.log(val);
-    }, (reason) => {
-        console.log(reason);
-    })
+    // let oP = new Promise((resolve, reject) => {
+    //     console.log(0);
+    //     setTimeout(() => {
+    //         Math.random() * 100 > 60 ? resolve('ok') : reject('no');
+    //     }, 100)
+    // });
+    // console.log(1);
+    // oP.then((val) => {
+    //     console.log(val);
+    // }, (reason) => {
+    //     console.log(reason);
+    // })
 
 
     // 注意.then()方法是异步执行的，和setTimeout一样,那两者谁先执行呢
     // 二：
-    setTimeout(() => {
-        console.log("setTime");
-    }, 0)
+    // setTimeout(() => {
+    //     console.log("setTime");
+    // }, 0)
 
-    let oP2 = new Promise((resolve, reject) => {
-        console.log(0);
-        resolve(2);
-    });
-    console.log(1);
-    oP2.then((val) => {
-        console.log(val);
-    }, (reason) => {
-        console.log(reason);
-    })
+    // let oP2 = new Promise((resolve, reject) => {
+    //     console.log(0);
+    //     resolve(2);
+    // });
+    // console.log(1);
+    // oP2.then((val) => {
+    //     console.log(val);
+    // }, (reason) => {
+    //     console.log(reason);
+    // })
     // 分析：
     //      因为Promise是同步, 如果.then()是同步 所以输出顺序是：0 2 1 setTime
     //      如果Promise是同步, 如果.then()是异步，又因为setTimeout比resolve先放入执行队列，所以输出顺序是：0 1 setTime 2
@@ -55,11 +56,11 @@
 
     // 关于promise的链式调用
     // 三：
-    let oP3 = new Promise((resolve, reject) => {
-        setTimeout(() => {
-            Math.random() * 100 > 60 ? resolve('及格') : reject('挂科');
-        }, 100)
-    })
+    // let oP3 = new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //         Math.random() * 100 > 60 ? resolve('及格') : reject('挂科');
+    //     }, 100)
+    // })
     // oP3.then((val) => {
     //         console.log(val);
     //     },(result) => {
@@ -103,18 +104,46 @@
     // 此时下一段链式的执行情况就取决于上个链式的返回值中的promise是成功还是失败，如果是成功就执行下段中的成功，否则执行下段中的失败
 
     // .then()中不管是在成功还是失败的方法中只要抛出错误throw new Error();只要该方法(不管是成功还是失败)执行就都会执行下段链式中的失败方法：
-    oP3.then((val) => {
-        console.log(val);
-        throw new Error("错误！");
-        return val;
-    }, (result) => {
-        console.log(result);
-        return result;
-    }).then((val) => {
-        console.log("OK then2:", val)
-    }, (result) => {
-        console.log("NO then2:", result);
+    // oP3.then((val) => {
+    //     console.log(val);
+    //     throw new Error("错误！");
+    //     return val;
+    // }, (result) => {
+    //     console.log(result);
+    //     return result;
+    // }).then((val) => {
+    //     console.log("OK then2:", val)
+    // }, (result) => {
+    //     console.log("NO then2:", result);
+    // });
+
+    // es5实现promise：
+    let newOp = new MyPromise((resolve, reject) => {
+        console.log(1);
+        resolve(222);
+        // throw new Error("错误！")
+        // setTimeout(()=> {
+        //     reject("异步~");
+        // },2000)
     });
+    newOp.then((val) => {
+        // console.log(2);
+        console.log(val, "ok");
+        // throw new Error("错误！")
+        return new MyPromise((res, rej) => {
+            rej("返回promise对象")
+        });
+        // return 1;    
+    }, (reason) => {
+        console.log(reason, "no");
+        return 2;
+    }).then().then((val) => {
+        console.log(val, "ok2")
+    }, (reason) => {
+        console.log(reason, "no2")
+    })
+    // 1 222'ok' 1'ok2'
+    // 1 222'ok' 对象ok2
 </script>
 
 </html>
