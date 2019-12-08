@@ -112,3 +112,31 @@ MyPromise.prototype.then = function (onFulfilled, onReject) {
     })
     return nextMyPromise;
 }
+
+MyPromise.prototype.race = function(promiseArr) {
+    return new MyPromise(function (resolve,reject) {
+        promiseArr.forEach(function (promisItem) {
+            promisItem.then(resolve,reject);
+        })
+    })
+}
+
+MyPromise.prototype.all = function (promiseArr) {
+    return new MyPromise(function (res,rej) {
+        var resArr = [];
+        // var i = 0;
+        promiseArr.forEach(function(promiseItem,i) {
+            promiseItem.then((val) =>{
+                i++;
+                resArr.push(val);
+                if(resArr.length == promiseArr.length){
+                    res(resArr);
+                }
+            },(reason)=>{
+                rej(reason)
+            });
+            
+        });
+        
+    })
+}
