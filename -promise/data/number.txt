@@ -1,1 +1,1 @@
-data/score.txt
+../-promise/data/score.txt

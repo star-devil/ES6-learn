@@ -10,14 +10,14 @@ let fs = require('fs');
 // 拙劣的表演:
 
 //读取文件的操作时异步操作，会产生回调地狱：
-// fs.readFile('data/name.txt','utf-8',(err,data) =>{
-//     // console.log(data);    //--->将读取到文件中的数据
-//     fs.readFile(data,'utf-8',(err,data) => {
-//         fs.readFile(data,'utf-8',(err,data) =>{
-//             console.log(data); 
-//         })
-//     })
-// })
+fs.readFile('data/name.txt','utf-8',(err,data) =>{
+    // console.log(data);    //--->将读取到文件中的数据
+    fs.readFile(data,'utf-8',(err,data) => {
+        fs.readFile(data,'utf-8',(err,data) =>{
+            console.log(data); 
+        })
+    })
+})
 
 //异步操作时的try...catch不好捕获，除非是：
 //①把捕获写在异步函数内部
@@ -28,12 +28,12 @@ let fs = require('fs');
 //异步操作时会有并发执行的结果不好获取，比如:
 // 要获取某个文件中的信息，并在获取完之后全部输出
 // let oNum = {};
-// function show (data) {
-//     console.log(data)
-// }
-// function show2 (data) {
-//     console.log(data,2)
-// }
+function show (data) {
+    console.log(data)
+}
+function show2 (data) {
+    console.log(data,2)
+}
 // fs.readFile('number/numone.txt','utf-8',(err,data) => {
 //     if(data) oNum.numone = data;
 //     // newShow(oNum);
@@ -60,21 +60,21 @@ let fs = require('fs');
 // let newShow = after(3,show);
 
 //所以引入promise中的一个发布订阅概念
-// let Store = {
-//     list: [],
-//     times: 3,
-//     subscribe (func) {
-//         this.list.push(func)
-//     },
-//     fire(...arg) {
-//         --this.times == 0 && this.list.forEach((ele) =>{
-//             ele.apply(null,arg);
-//         })
-//     }
-// }
+let Store = {
+    list: [],
+    times: 3,
+    subscribe (func) {
+        this.list.push(func)
+    },
+    fire(...arg) {
+        --this.times == 0 && this.list.forEach((ele) =>{
+            ele.apply(null,arg);
+        })
+    }
+}
 
-// Store.subscribe(show);
-// Store.subscribe(show2);
+Store.subscribe(show);
+Store.subscribe(show2);
 
 //promise的使用请看html
 
@@ -88,13 +88,16 @@ function readFile(path) {
         })
     })
 }
+
+readFile('data/name.txt').then((data)=>{
+    return readFile(data);
+}).then((data) => {
+    return readFile(data);
+}).then((data) => {
+    console.log(data)
+})
+
+// 测试all方法
 Promise.all([readFile('data/name.txt'), readFile('data/number.txt'), readFile('data/score.txt')]).then((val) => {
     console.log(val);
 })
-// readFile('data/name.txt').then((data)=>{
-//     return readFile(data);
-// }).then((data) => {
-//     return readFile(data);
-// }).then((data) => {
-//     console.log(data)
-// })

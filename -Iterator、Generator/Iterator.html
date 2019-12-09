@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>迭代器</title>
+</head>
+<body>
+    
+</body>
+<script>
+// Iterator
+let os4 = Symbol({
+    name: 'wql',
+    toString: function(){
+        return "wgx";
+    }
+});
+
+let obj = {
+    0: "a",
+    1: "b",
+    2: "c",
+    3: "d",
+    length: 4,
+    [Symbol.iterator]: function() {    //这里还不能用箭头函数，否则程序会卡死，为什么呢
+        let curIndex = 0;
+        let next = () =>{
+            return {
+                value: this[curIndex],
+                done: this.length == curIndex++
+            }
+        }
+        return {
+            next
+        }
+    }
+}
+console.log("obj--",[...obj]);
+
+//迭代生成器
+function *test() {
+    // 因为分段执行，遇yield停，
+    // 所以test.next();时先执行yield "a",程序停止,
+    // 当第二段test.next();时进行val1的赋值，然后接着执行输出语句，再执行yield "b",程序停止，依次循环
+    let val1 = yield "a";
+
+    console.log(val1);
+    let val2 = yield "b";
+
+    console.log(val2);
+    let val3 = yield "c";
+
+    console.log(val3);
+    return "d";
+}
+let oT = test();
+console.log(oT.next("1")); // --->输出：{value: "a", done: false}
+console.log(oT.next("2")); // --->输出：2 {value: "b", done: false}
+                           // 这个2是val1的输出即yield "a",对象时.next();的输出
+console.log(oT.next("3")); // --->输出：3 {value: "c", done: false}
+console.log(oT.next("4")); // --->输出：4 {value: "c", done: true}
+
+// 用迭代生成器改写Iterator
+let newObj = {
+    0: "a",
+    1: "b",
+    2: "c",
+    3: "d",
+    length: 4,
+    [Symbol.iterator]: function *() {    //这里还不能用箭头函数，否则程序会卡死，为什么呢
+        var curIndex = 0;
+        while(curIndex != this.length){
+            yield this[curIndex];
+            curIndex++;
+        }
+    }
+}
+console.log("newObj--",[...newObj]);
+
+</script>
+</html>
