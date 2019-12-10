@@ -135,8 +135,6 @@ MyPromise.prototype.all = function (promiseArr) {
             },(reason)=>{
                 rej(reason)
             });
-            
-        });
-        
+        });  
     })
 }
